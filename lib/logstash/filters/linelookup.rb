@@ -41,12 +41,13 @@ class LogStash::Filters::Linelookup < LogStash::Filters::Base
       end
 
     rescue => e
+      @logger.warn("Failed to query lookup service", :event => event, :exception => e)
       @lookupconn = nil
       retries -= 1
       unless retries < 0
         retry
       else
-        @logger.warn("Failed to query lookup service", :event => event, :exception => e)
+        @logger.warn("Too many reties. Giving up.", :event => event)
         event.tag("_linelookup_failure")
       end
     end
