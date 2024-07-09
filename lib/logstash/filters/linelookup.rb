@@ -32,6 +32,7 @@ class LogStash::Filters::Linelookup < LogStash::Filters::Base
       @lookupconn ||= connect
 
       @lookupconn.puts(event.sprintf(@query))
+      @lookupconn.flush
 
       response = @lookupconn.gets.chop
 
