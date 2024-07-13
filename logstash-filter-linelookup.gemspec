@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = 'logstash-filter-linelookup'
-  s.version       = '0.1.2'
+  s.version       = '0.1.3'
   s.licenses      = ['MIT']
   s.summary       = 'Logstash Filter Plugin for Linelookup'
   s.description   = 'A logstash filter for enrichment via a simple line-protocol over a socket'

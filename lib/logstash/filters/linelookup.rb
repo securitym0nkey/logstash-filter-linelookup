@@ -22,19 +22,21 @@ class LogStash::Filters::Linelookup < LogStash::Filters::Base
   public
   def register
     @lookupconn = nil
-
+    @connmu = Mutex.new
   end
 
   public
   def filter(event)
     retries = 2  
     begin
-      @lookupconn ||= connect
 
+      @connmu.lock
+      @lookupconn ||= connect
       @lookupconn.puts(event.sprintf(@query))
       @lookupconn.flush
 
       response = @lookupconn.gets.chop
+      @connmu.unlock
 
       if response != @miss_value
         event.set(@target, response)
@@ -59,5 +61,9 @@ class LogStash::Filters::Linelookup < LogStash::Filters::Base
   def connect
 
     Socket.unix(@socket_path)
+  end
+
+  def close
+    @lookupconn.close
   end
 end # class LogStash::Filters::Linelookup
